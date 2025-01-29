@@ -76,7 +76,7 @@ node src/index.js
    - `ALPHA_VANTAGE_API_KEY`
    - `DISCORD_WEBHOOK_URL` (optional)
 
-The GitHub Action will automatically run once daily at 7 AM UTC.
+The GitHub Action will automatically run once daily at 7 AM MYT.
 
 ## Customization
 
