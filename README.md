@@ -165,7 +165,8 @@ on:
 5. Open a Pull Request
 
 ## Sample Screenshot of the results
-<img width="1106" alt="image" src="https://github.com/user-attachments/assets/3230ed18-b574-4a25-add1-cbd043c7e65b" />
+<img width="1121" alt="image" src="https://github.com/user-attachments/assets/ed98c2e5-c0b3-4b41-b494-109dbbc55a9c" />
+
 
 
 ## License
