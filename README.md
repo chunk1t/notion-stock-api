@@ -4,7 +4,7 @@ Automatically update stock and cryptocurrency prices in your Notion database usi
 
 ## Features
 
-- 🤖 Automated daily price updates at 7 AM
+- 🤖 Automated daily price updates at 7 AM MYT
 - 📈 Support for both stocks and cryptocurrencies
 - 📊 Integration with Notion database
 - 📝 Detailed logging
