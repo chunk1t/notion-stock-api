@@ -123,6 +123,10 @@ Add new assets directly in your Notion database:
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
+## Sample Screenshot of the results
+<img width="1106" alt="image" src="https://github.com/user-attachments/assets/3230ed18-b574-4a25-add1-cbd043c7e65b" />
+
+
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
