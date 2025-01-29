@@ -1,11 +1,11 @@
 # Notion Stock & Crypto Price Tracker
 
-Automatically update stock and cryptocurrency prices in your Notion database using GitHub Actions. This application fetches prices from Alpha Vantage (stocks) and CoinGecko (cryptocurrencies) APIs and updates your Notion database daily.
+Automatically update stock, cryptocurrency, and Malaysian stock prices in your Notion database using GitHub Actions. This application fetches prices from Alpha Vantage (US stocks), Yahoo Finance (Malaysian stocks), and CoinGecko (cryptocurrencies) APIs and updates your Notion database daily.
 
 ## Features
 
-- 🤖 Automated daily price updates at 7 AM MYT
-- 📈 Support for both stocks and cryptocurrencies
+- 🤖 Automated daily price updates at 7 AM
+- 📈 Support for US stocks, Malaysian stocks, and cryptocurrencies
 - 📊 Integration with Notion database
 - 📝 Detailed logging
 - ⚠️ Error notifications via Discord
@@ -16,14 +16,14 @@ Automatically update stock and cryptocurrency prices in your Notion database usi
 - Node.js 16 or higher
 - A Notion account and database
 - GitHub account (for automated updates)
-- Alpha Vantage API key (free tier available)
+- Alpha Vantage API key (free tier available, for US stocks only)
 - Discord webhook URL (optional, for notifications)
 
 ## Notion Database Setup
 
 1. Create a new database in Notion with the following properties:
    - Symbol (Text)
-   - Asset Type (Select: Stock/Crypto)
+   - Asset Type (Select: Stock/MalaysiaStock/Crypto)
    - Current Price (Number)
    - Last Updated (Last edited time)
 
@@ -55,15 +55,58 @@ cp .env.example .env
 ```
 NOTION_API_KEY=your_notion_api_key
 NOTION_DATABASE_ID=your_database_id
-ALPHA_VANTAGE_API_KEY=your_alphavantage_api_key
+ALPHA_VANTAGE_API_KEY=your_alphavantage_api_key  # Only needed for US stocks
 DISCORD_WEBHOOK_URL=your_discord_webhook_url  # Optional
 ```
 
+## Adding Stocks to Track
+
+### Malaysian Stocks (KLSE)
+Add Malaysian stocks to your Notion database with:
+- Asset Type: `MalaysiaStock`
+- Symbol: Either format works
+  - With suffix: `1155.KL`
+  - Without suffix: `1155` (The .KL suffix will be added automatically)
+
+Popular Malaysian Stocks Examples:
+```
+1155.KL - Maybank
+5285.KL - Sime Darby
+6012.KL - Maxis
+1023.KL - CIMB
+5347.KL - Tenaga
+```
+
+### US Stocks
+Add US stocks with:
+- Asset Type: `Stock`
+- Symbol: Standard NYSE/NASDAQ symbols (e.g., AAPL, MSFT, GOOGL)
+
+### Cryptocurrencies
+Add cryptocurrencies with:
+- Asset Type: `Crypto`
+- Symbol: Use CoinGecko IDs (e.g., bitcoin, ethereum, solana)
+
 ## Local Testing
 
-Run the price update script locally:
+Test the entire application:
 ```bash
 node src/index.js
+```
+
+Test specific Malaysian stocks:
+```javascript
+const malaysiaStockService = require('./src/services/malaysiaStockService');
+
+async function testStock() {
+    try {
+        const price = await malaysiaStockService.getPrice('1155');  // Maybank
+        console.log('Maybank stock price:', price);
+    } catch (error) {
+        console.error('Error:', error.message);
+    }
+}
+testStock();
 ```
 
 ## GitHub Actions Setup
@@ -73,10 +116,10 @@ node src/index.js
 3. Add the following repository secrets:
    - `NOTION_API_KEY`
    - `NOTION_DATABASE_ID`
-   - `ALPHA_VANTAGE_API_KEY`
+   - `ALPHA_VANTAGE_API_KEY` (only needed for US stocks)
    - `DISCORD_WEBHOOK_URL` (optional)
 
-The GitHub Action will automatically run once daily at 7 AM MYT.
+The GitHub Action will automatically run once daily at 7 AM UTC.
 
 ## Customization
 
@@ -91,13 +134,6 @@ on:
     - cron: '0 7 * * *'  # Runs at 7 AM UTC
 ```
 
-### Adding More Assets
-
-Add new assets directly in your Notion database:
-1. Add a new row
-2. Set the Symbol (e.g., AAPL for Apple stock, bitcoin for Bitcoin)
-3. Select the Asset Type (Stock or Crypto)
-
 ## Troubleshooting
 
 1. **Price updates not running:**
@@ -105,12 +141,17 @@ Add new assets directly in your Notion database:
    - Verify all secrets are set correctly
    - Ensure GitHub Actions is enabled for the repository
 
-2. **API errors:**
-   - Verify API keys are valid
-   - Check API rate limits
-   - Review error logs in GitHub Actions
+2. **Malaysian Stock errors:**
+   - Verify the stock symbol is correct
+   - Check if the stock is actively traded
+   - Ensure the .KL suffix is either present or absent (not partial)
 
-3. **Notion updates failing:**
+3. **API errors:**
+   - For US stocks: Verify Alpha Vantage API key
+   - For Malaysian stocks: Yahoo Finance might be experiencing high traffic
+   - For crypto: Check CoinGecko rate limits
+
+4. **Notion updates failing:**
    - Confirm database structure matches requirements
    - Verify Notion API key and database ID
    - Check if integration has database access

@@ -1,6 +1,7 @@
 const notionClient = require('./notion/client');
 const stockService = require('./services/stockService');
 const cryptoService = require('./services/cryptoService');
+const malaysiaStockService = require('./services/malaysiaStockService');
 const logger = require('./utils/logger');
 const notifier = require('./utils/notifier');
 
@@ -10,9 +11,21 @@ async function updatePrices() {
 
     for (const asset of assets) {
       try {
-        const price = await (asset.assetType === 'Stock'
-          ? stockService.getPrice(asset.symbol)
-          : cryptoService.getPrice(asset.symbol));
+         let price;
+                switch (asset.assetType) {
+                    case 'Stock':
+                        price = await stockService.getPrice(asset.symbol);
+                        break;
+                    case 'Crypto':
+                        price = await cryptoService.getPrice(asset.symbol);
+                        break;
+                    case 'MalaysiaStock':
+                        price = await malaysiaStockService.getPrice(asset.symbol);
+                        break;
+                    default:
+                        logger.warn(`Unknown asset type: ${asset.assetType} for symbol ${asset.symbol}`);
+                        continue;
+                }
 
         await notionClient.updatePrice(asset.id, price, asset.assetType);
       } catch (error) {
